@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subadmin {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  password        String
+  isEmailVerified Boolean  @default(false)
+  centerId        String   @unique
+  center          Center   @relation(fields: [centerId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Center {
+  id        String    @id @default(uuid())
+  name      String
+  city      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  subadmin  Subadmin?
+}
+
+// Center          Center[]
+// subadmin   Subadmin @relation(fields: [subadminId], references: [id])
+// subadminId String
+
+model Promotion {
+  id Int @id @default(autoincrement())
+}
+
+model Manager {
+  id              String  @id @default(uuid())
+  email           String  @unique
+  password        String
+  isEmailVerified Boolean @default(false)
+}
+
+// model Category {
+//   id Int @id @default(autoincrement())
+// }
+
+// model Product {
+//   id Int @id @default(autoincrement())
+// }
+
+// model User {
+//   id    Int    @id @default(autoincrement())
+//   posts Post[]
+// }
+
+// model Post {
+//   id       Int  @id @default(autoincrement())
+//   author   User @relation(fields: [authorId], references: [id])
+//   authorId Int
+// }
