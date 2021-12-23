@@ -71,7 +71,7 @@ router.post('/create', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
 );
 
 
-router.post('/delete', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
+router.delete('/delete', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
   // validate body
   const body = { ...req.body };
 
@@ -92,7 +92,5 @@ router.post('/delete', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
   });
 
 });
-
-
 
 export { router };

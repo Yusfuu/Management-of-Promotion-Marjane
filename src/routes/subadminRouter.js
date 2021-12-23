@@ -1,7 +1,7 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 import { prisma } from "../../prisma/client";
 import { requiredAuth, promotionTime } from "../middleware/";
+import sendEmail from "../utils/email";
 import { createToken, verifyToken } from "../utils/jwt";
 
 const router = express.Router();
@@ -49,6 +49,7 @@ router.post('/login', async (req, res) => {
   const sub = {
     id: subadmin.id,
     email: subadmin.email,
+    centerId: subadmin.centerId,
   }
 
   const token = createToken(sub, { role: 'SUBADMIN' });
@@ -57,6 +58,7 @@ router.post('/login', async (req, res) => {
 });
 
 // middleware for promotionTime
+
 // router.use(promotionTime);
 
 router.post('/promotion/create', requiredAuth({ role: 'SUBADMIN' }), async (req, res) => {
@@ -64,6 +66,8 @@ router.post('/promotion/create', requiredAuth({ role: 'SUBADMIN' }), async (req,
 
   const { productId, discount } = body;
   const product = await prisma.product.findUnique({ where: { id: productId }, include: { Promotion: true, Category: true } });
+
+
 
   if (!product) {
     return res.status(400).json({ error: 'Product does not exist' });
@@ -98,8 +102,31 @@ router.post('/promotion/create', requiredAuth({ role: 'SUBADMIN' }), async (req,
 
 router.post('/manger/create', requiredAuth({ role: 'SUBADMIN' }), async (req, res) => {
   const body = { ...req.body };
+  const { email, password, categoryId } = body;
 
-  res.json({ bod: body });
+  const manger = {
+    email,
+    password,
+    categoryId,
+    centerId: req.currentUser.centerId
+  }
+
+  const mangerCreated = await prisma.manager.create({
+    data: manger
+  });
+
+
+  const mangerToken = createToken(mangerCreated, { role: 'MANGER' });
+
+  const authUrl = `${process.env.APP_URL}/manger/confirmation/${mangerToken}`;
+  const info = await sendEmail('holasamilol@gmail.com', authUrl);
+
+  res.json({
+    data: mangerCreated,
+    message: 'manger created successfully',
+    inbox: "https://mail.google.com/mail/u/0/#inbox",
+  });
+
 });
 
 

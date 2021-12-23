@@ -1,5 +1,5 @@
 import express from "express";
-import { adminRouter, subadminRouter } from "./src/routes";
+import { adminRouter, managerRouter, subadminRouter } from "./src/routes";
 import 'dotenv/config';
 
 const app = express();
@@ -8,6 +8,7 @@ app.use(express.json());
 
 app.use('/admin', adminRouter);
 app.use('/subadmin', subadminRouter);
+app.use('/manger', managerRouter);
 
 // app.post('/update/:id', async (req, res) => {
 //   console.log(req.params.id);

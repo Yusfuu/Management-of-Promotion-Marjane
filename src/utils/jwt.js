@@ -1,20 +1,27 @@
 import jwt from "jsonwebtoken";
 
+const keys = {
+  ADMIN: process.env.APP_KEY_ADMIN,
+  SUBADMIN: process.env.APP_KEY_SUBADMIN,
+  MANGER: process.env.APP_KEY_MANGER
+}
+
+Object.freeze(keys);
+
 export const createToken = (payload = null, { role = 'SUBADMIN' }) => {
   if (!payload) return null;
+  const _key = keys[role];
 
-  const key = role === 'ADMIN' ? process.env.APP_KEY_ADMIN : process.env.APP_KEY_SUBADMIN;
-
-  return jwt.sign(payload, key, { expiresIn: "1h" });
+  return jwt.sign(payload, _key, { expiresIn: "1h" });
 };
 
 export const verifyToken = (token = null, { role = 'SUBADMIN' }) => {
   if (!token) return null;
 
-  const key = role === 'ADMIN' ? process.env.APP_KEY_ADMIN : process.env.APP_KEY_SUBADMIN;
+  const _key = keys[role];
 
   try {
-    return jwt.verify(token, key);
+    return jwt.verify(token, _key);
   } catch (error) {
     return null;
   }
