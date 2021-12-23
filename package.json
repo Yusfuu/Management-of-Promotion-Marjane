@@ -8,7 +8,9 @@
     "migrate": "prisma migrate dev --name init",
     "gen": "prisma generate",
     "studio": "prisma studio",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "reset": "prisma migrate reset --force",
+    "db": "yarn reset && yarn migrate && yarn seed"
   },
   "keywords": [],
   "author": "",

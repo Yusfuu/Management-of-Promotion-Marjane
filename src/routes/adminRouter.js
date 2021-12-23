@@ -59,16 +59,14 @@ router.post('/create', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
 
   const subadmin = await prisma.subadmin.create({ data: body });
   const subadminToken = createToken(subadmin, { role: 'SUBADMIN' });
-  const authUrl = `${process.env.APP_URL}/subadmin/auth/${subadminToken}`;
-
-  // const info = await sendEmail('holasamilol@gmail.com', authUrl);
+  const authUrl = `${process.env.APP_URL}/subadmin/confirmation/${subadminToken}`;
+  const info = await sendEmail('holasamilol@gmail.com', authUrl);
 
   res.json({
     data: subadmin,
     message: 'subadmin created successfully',
     inbox: "https://mail.google.com/mail/u/0/#inbox",
   });
-
 }
 );
 

@@ -16,55 +16,70 @@ model Admin {
 }
 
 model Subadmin {
-  id              String   @id @default(uuid())
-  email           String   @unique
+  id              String      @id @default(uuid())
+  email           String      @unique
   password        String
-  isEmailVerified Boolean  @default(false)
-  centerId        String   @unique
-  center          Center   @relation(fields: [centerId], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  isEmailVerified Boolean     @default(false)
+  centerId        String      @unique
+  center          Center      @relation(fields: [centerId], references: [id])
+  Promotion       Promotion[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 model Center {
   id        String    @id @default(uuid())
   name      String
   city      String
+  subadmin  Subadmin?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  subadmin  Subadmin?
+  Manager   Manager[]
 }
 
-// Center          Center[]
-// subadmin   Subadmin @relation(fields: [subadminId], references: [id])
-// subadminId String
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  products  Product[]
+  Manager   Manager[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id         String     @id @default(uuid())
+  name       String
+  price      Float
+  quantity   Int
+  categoryId String
+  Category   Category   @relation(fields: [categoryId], references: [id])
+  Promotion  Promotion?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
 
 model Promotion {
-  id Int @id @default(autoincrement())
+  id           String   @id @default(uuid())
+  productId    String   @unique
+  product      Product  @relation(fields: [productId], references: [id])
+  subadminId   String
+  subadmin     Subadmin @relation(fields: [subadminId], references: [id])
+  discount     Float
+  FidelityCard Float
+  confirmation Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Manager {
-  id              String  @id @default(uuid())
-  email           String  @unique
+  id              String   @id @default(uuid())
+  email           String   @unique
   password        String
-  isEmailVerified Boolean @default(false)
+  isEmailVerified Boolean  @default(false)
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id])
+  centerId        String
+  center          Center   @relation(fields: [centerId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
-
-// model Category {
-//   id Int @id @default(autoincrement())
-// }
-
-// model Product {
-//   id Int @id @default(autoincrement())
-// }
-
-// model User {
-//   id    Int    @id @default(autoincrement())
-//   posts Post[]
-// }
-
-// model Post {
-//   id       Int  @id @default(autoincrement())
-//   author   User @relation(fields: [authorId], references: [id])
-//   authorId Int
-// }
