@@ -32,9 +32,9 @@ model Center {
   name      String
   city      String
   subadmin  Subadmin?
+  Manager   Manager[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Manager   Manager[]
 }
 
 model Category {
@@ -82,4 +82,10 @@ model Manager {
   center          Center   @relation(fields: [centerId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model Logs {
+  id        String   @id @default(uuid())
+  operation String
+  createdAt DateTime @default(now())
 }

@@ -2,6 +2,7 @@ import express from "express";
 import { prisma } from "../../prisma/client";
 import { createToken, verifyToken } from "../utils/jwt";
 import { requiredAuth } from "../middleware/requiredAuth";
+import { promotionTime } from "../middleware";
 
 const router = express.Router();
 
@@ -52,6 +53,8 @@ router.post('/login', async (req, res) => {
   res.json({ token });
 });
 
+
+router.use(promotionTime);
 
 
 router.get('/promotions', requiredAuth({ role: 'MANGER' }), async (req, res) => {

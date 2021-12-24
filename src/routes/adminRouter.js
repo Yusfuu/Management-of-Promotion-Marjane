@@ -93,4 +93,22 @@ router.delete('/delete', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
 
 });
 
+
+router.get('/operations', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
+  // validate body
+  const operations = await prisma.logs.findMany();
+
+  res.json({ operations });
+});
+
+
+router.get('/export', requiredAuth({ role: 'ADMIN' }), async (req, res) => {
+  // validate body
+  const operations = await prisma.logs.findMany();
+  require('fs').writeFileSync('./operations.json', JSON.stringify(operations));
+  res.json({ operations });
+});
+
+
+
 export { router };
