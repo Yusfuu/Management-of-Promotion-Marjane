@@ -1,3 +1,4 @@
+import { log } from "console";
 import express from "express";
 import { prisma } from "../../prisma/client";
 import { requiredAuth, promotionTime } from "../middleware/";
@@ -103,7 +104,6 @@ router.post('/promotion/create', requiredAuth({ role: 'SUBADMIN' }), async (req,
 router.post('/manger/create', requiredAuth({ role: 'SUBADMIN' }), async (req, res) => {
   const body = { ...req.body };
   const { email, password, categoryId } = body;
-
   const manger = {
     email,
     password,
@@ -129,5 +129,23 @@ router.post('/manger/create', requiredAuth({ role: 'SUBADMIN' }), async (req, re
 
 });
 
+
+router.get('/promotions', requiredAuth({ role: 'SUBADMIN' }), async (req, res) => {
+  const { id } = req.currentUser;
+  const promotions = await prisma.promotion.findMany({
+    where: {
+      subadminId: id
+    },
+    include: {
+      product: {
+        include: {
+          Category: true
+        }
+      }
+    }
+  });
+
+  res.json({ promotions });
+})
 
 export { router };

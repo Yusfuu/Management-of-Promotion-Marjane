@@ -11,7 +11,6 @@ const error = {
   password: 'Sorry, your password was incorrect. Please double-check your password.',
   missing: 'Sorry, you are missing some required fields. Please try again.',
 }
-console.log(error);
 
 
 router.post('/auth', async (req, res) => {
